@@ -20,7 +20,7 @@ export class MessagesController {
 
   @Post()
   send(@Request() req, @Body() body: { receiverId: string; listingId?: string; text: string }) {
-    return this.messagesService.send(req.user.id, body.receiverId, body.listingId, body.text);
+    return this.messagesService.send(req.user.id, body.receiverId, body.listingId!, body.text);
   }
 
   @Put(':id/read')

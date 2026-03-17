@@ -11,16 +11,16 @@ export class FilesService {
 
   constructor(private config: ConfigService) {
     this.s3 = new S3Client({
-      endpoint: config.get('S3_ENDPOINT'),
-      region: config.get('S3_REGION', 'us-east-1'),
+      endpoint: config.get<string>('S3_ENDPOINT')!,
+      region: config.get<string>('S3_REGION', 'us-east-1'),
       credentials: {
-        accessKeyId: config.get('S3_ACCESS_KEY'),
-        secretAccessKey: config.get('S3_SECRET_KEY'),
+        accessKeyId: config.get<string>('S3_ACCESS_KEY')!,
+        secretAccessKey: config.get<string>('S3_SECRET_KEY')!,
       },
       forcePathStyle: true, // Required for MinIO
     });
-    this.bucket = config.get('S3_BUCKET');
-    this.cdnUrl = config.get('CDN_URL') || config.get('S3_ENDPOINT');
+    this.bucket = config.get<string>('S3_BUCKET')!;
+    this.cdnUrl = config.get<string>('CDN_URL') || config.get<string>('S3_ENDPOINT')!;
   }
 
   async uploadImage(buffer: Buffer, mimetype: string, folder = 'listings'): Promise<string> {
