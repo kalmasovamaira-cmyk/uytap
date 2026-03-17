@@ -111,48 +111,58 @@ export function SearchBar({ initialValues = {}, variant = 'hero', onSearch }: Pr
 
   // Hero variant
   return (
-    <form onSubmit={handleSearch} className="w-full">
+    <form onSubmit={handleSearch} className="w-full max-w-4xl mx-auto">
       {/* Deal type tabs */}
       <div className="flex gap-2 mb-4">
-        {[{ v: '', l: 'Все' }, { v: 'sale', l: 'Купить' }, { v: 'rent', l: 'Арендовать' }].map(t => (
+        {[
+          { v: '', l: 'Все' }, 
+          { v: 'sale', l: 'Купить' }, 
+          { v: 'rent', l: 'Арендовать' }
+        ].map(t => (
           <button key={t.v} type="button"
             onClick={() => set('dealType', t.v)}
-            className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 ${values.dealType === t.v ? 'bg-white text-[#00A661] shadow-md' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${values.dealType === t.v ? 'search-tab-active' : 'search-tab-inactive'}`}>
             {t.l}
           </button>
         ))}
       </div>
 
       {/* Main search row */}
-      <div className="flex flex-col sm:flex-row gap-2">
-        <div className="flex-1 flex bg-white rounded-2xl overflow-hidden shadow-xl">
+      <div className="relative group/search">
+        <div className="flex flex-col md:flex-row gap-0 bg-white rounded-2xl md:rounded-[24px] overflow-hidden shadow-2xl border border-white/20">
           {/* City select */}
-          <select
-            className="px-4 py-4 text-gray-700 border-r border-gray-100 bg-transparent text-sm outline-none min-w-[130px] cursor-pointer"
-            value={values.cityId}
-            onChange={e => set('cityId', e.target.value)}
-          >
-            <option value="">📍 Все города</option>
-            {cities.map(c => <option key={c.id} value={c.id}>{c.nameRu}</option>)}
-          </select>
+          <div className="flex items-center px-4 border-b md:border-b-0 md:border-r border-slate-100 min-w-[160px] hover:bg-slate-50 transition-colors">
+            <span className="text-[#00A661]">📍</span>
+            <select
+              className="flex-1 py-4 px-2 text-slate-700 bg-transparent text-sm font-bold outline-none cursor-pointer appearance-none"
+              value={values.cityId}
+              onChange={e => set('cityId', e.target.value)}
+            >
+              <option value="">Все города</option>
+              {cities.map(c => <option key={c.id} value={c.id}>{c.nameRu}</option>)}
+            </select>
+          </div>
 
           {/* Text input */}
-          <input
-            type="text"
-            placeholder="Поиск: квартира, дом, адрес..."
-            className="flex-1 px-4 py-4 text-gray-900 outline-none text-sm bg-transparent"
-            value={values.q}
-            onChange={e => set('q', e.target.value)}
-          />
-        </div>
+          <div className="flex-1 flex items-center px-4 hover:bg-slate-50 transition-colors">
+            <input
+              type="text"
+              placeholder="Поиск по названию, адресу или ЖК..."
+              className="flex-1 py-4 text-slate-900 outline-none text-sm font-medium bg-transparent placeholder:text-slate-400"
+              value={values.q}
+              onChange={e => set('q', e.target.value)}
+            />
+          </div>
 
-        <button type="submit"
-          className="bg-[#00A661] hover:bg-[#008A50] text-white font-bold px-8 py-4 rounded-2xl transition-all duration-200 text-sm shadow-xl hover:shadow-green-500/30 hover:shadow-2xl active:scale-95 flex items-center gap-2">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          Найти
-        </button>
+          {/* Search Button */}
+          <button type="submit"
+            className="bg-primary hover:bg-primary-dark text-white font-black px-10 py-4 transition-all duration-300 flex items-center justify-center gap-2 group/btn">
+            <svg className="w-5 h-5 transition-transform group-hover/btn:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span className="md:inline">Найти</span>
+          </button>
+        </div>
       </div>
 
       {/* Additional filters toggle */}

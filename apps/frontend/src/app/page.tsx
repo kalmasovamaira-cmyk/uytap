@@ -2,14 +2,39 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { 
+  Building2, 
+  Home, 
+  Trees, 
+  Store, 
+  Construction, 
+  Warehouse, 
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+  CheckCircle2,
+  PlusCircle,
+  Users
+} from 'lucide-react';
 import { SearchBar } from '@/components/search/SearchBar';
 import { ListingCard } from '@/components/listings/ListingCard';
 import { listingsApi, locationsApi, categoriesApi, statsApi } from '@/lib/api';
 import { Listing, City, Category } from '@/types';
 
-const CATEGORY_ICONS: Record<string, string> = {
-  apartment: '🏠', house: '🏡', land: '🌿', commercial: '🏢',
-  'new-buildings': '🏗️', garage: '🚗',
+const CATEGORY_ICONS: Record<string, any> = {
+  apartment: Home, 
+  house: Trees, 
+  land: Zap, 
+  commercial: Store,
+  'new-buildings': Construction, 
+  garage: Warehouse,
+};
+
+const CITY_IMAGES: Record<string, string> = {
+  'almaty': '/cities/almaty.png',
+  'astana': '/cities/astana.png',
+  'shymkent': '/cities/shymkent.png',
+  'karaganda': '/cities/karaganda.png',
 };
 
 export default function HomePage() {
@@ -26,7 +51,7 @@ export default function HomePage() {
       categoriesApi.getAll() as Promise<Category[]>,
       statsApi.getPublic() as Promise<any>,
     ]).then(([f, c, cats, s]) => {
-      setFeatured(f);
+      setFeatured(f.slice(0, 8));
       setCities(c.slice(0, 8));
       setCategories(cats);
       setStats(s);
@@ -37,47 +62,65 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="hero-gradient min-h-[560px] flex items-center relative overflow-hidden">
-        {/* Decorative blobs */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#00A661]/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 py-16">
-          <div className="max-w-3xl">
+      <section className="hero-gradient min-h-[600px] flex items-center relative overflow-hidden py-20">
+        <div className="hero-overlay absolute inset-0 z-0" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-[#00A661]/20 border border-[#00A661]/30 text-[#00A661] rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-              <span className="w-2 h-2 bg-[#00A661] rounded-full animate-pulse"></span>
-              Бесплатное размещение объявлений
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 text-white rounded-full px-5 py-2 text-xs font-black uppercase tracking-widest mb-10 animate-fade-in">
+              <ShieldCheck size={14} className="text-primary" />
+              Бесплатное размещение объявлений №1
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4 leading-tight">
-              Найдите своё
-              <span className="text-[#00A661]"> идеальное</span>
-              <br />жильё в Казахстане
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white mb-6 leading-[1.1] tracking-tight animate-fade-in">
+              Ваш новый дом <br className="hidden md:block" /> 
+              начинается <span className="text-primary relative inline-block">
+                здесь
+                <div className="absolute -bottom-2 left-0 w-full h-1.5 bg-primary/30 rounded-full blur-sm" />
+              </span>
             </h1>
-            <p className="text-white/70 text-lg mb-8 max-w-xl">
-              Крупнейший бесплатный маркетплейс недвижимости. Сотни тысяч объявлений по всему Казахстану.
+            
+            <p className="text-white/60 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-medium animate-fade-in delay-100">
+              Самый быстрый способ найти, купить или арендовать <br className="hidden md:block" /> недвижимость в любом городе Казахстана.
             </p>
 
             {/* Search */}
-            <SearchBar variant="hero" />
+            <div className="animate-fade-in delay-200">
+              <SearchBar variant="hero" />
+            </div>
 
             {/* Stats chips */}
             {stats && (
-              <div className="flex flex-wrap gap-4 mt-6">
-                <div className="flex items-center gap-2 text-white/70 text-sm">
-                  <span className="text-[#00A661] font-bold text-lg">{stats.totalListings?.toLocaleString()}</span>
-                  <span>объявлений</span>
+              <div className="flex flex-wrap justify-center items-center gap-6 mt-12 animate-fade-in delay-300">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/5 rounded-lg border border-white/5">
+                    <CheckCircle2 size={18} className="text-primary" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white font-black text-lg leading-none">{stats.totalListings?.toLocaleString()}+</p>
+                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-wider">Объявлений</p>
+                  </div>
                 </div>
-                <div className="w-px h-4 bg-white/20 self-center" />
-                <div className="flex items-center gap-2 text-white/70 text-sm">
-                  <span className="text-[#00A661] font-bold text-lg">14</span>
-                  <span>городов</span>
+                <div className="w-px h-8 bg-white/10 hidden sm:block" />
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/5 rounded-lg border border-white/5">
+                    <Trees size={18} className="text-primary" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white font-black text-lg leading-none">14</p>
+                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-wider">Городов</p>
+                  </div>
                 </div>
-                <div className="w-px h-4 bg-white/20 self-center" />
-                <div className="flex items-center gap-2 text-white/70 text-sm">
-                  <span className="text-[#00A661] font-bold text-lg">100%</span>
-                  <span>бесплатно</span>
+                <div className="w-px h-8 bg-white/10 hidden sm:block" />
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/5 rounded-lg border border-white/5">
+                    <Users size={18} className="text-primary" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white font-black text-lg leading-none">100%</p>
+                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-wider">Бесплатно</p>
+                  </div>
                 </div>
               </div>
             )}
@@ -86,84 +129,103 @@ export default function HomePage() {
       </section>
 
       {/* Categories */}
-      <section className="py-12 bg-white">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-title mb-8">Категории недвижимости</h2>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/listings?categoryId=${cat.id}`}
-                className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-gray-100 hover:border-[#00A661] hover:bg-[#E6F7EF] transition-all duration-200 group"
-              >
-                <span className="text-3xl group-hover:scale-110 transition-transform duration-200">
-                  {CATEGORY_ICONS[cat.slug] || '🏘️'}
-                </span>
-                <span className="text-xs font-medium text-gray-700 text-center leading-tight">{cat.nameRu}</span>
-              </Link>
-            ))}
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Категории недвижимости</h2>
+              <p className="text-slate-400 font-medium mt-2">Выберите наиболее подходящий тип жилья</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {categories.map((cat) => {
+              const Icon = CATEGORY_ICONS[cat.slug] || Home;
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/listings?categoryId=${cat.id}`}
+                  className="flex flex-col items-center gap-4 p-6 rounded-3xl border border-slate-100 hover:border-primary/30 hover:bg-emerald-50 transition-all duration-300 group shadow-sm hover:shadow-xl"
+                >
+                  <div className="w-14 h-14 bg-slate-50 group-hover:bg-white rounded-2xl flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors shadow-inner group-hover:shadow-md">
+                    <Icon size={28} />
+                  </div>
+                  <span className="text-sm font-bold text-slate-700 text-center tracking-tight">{cat.nameRu}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Featured Listings */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-20 bg-slate-50/50 border-y border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="section-title">Свежие объявления</h2>
-              <p className="section-subtitle">Актуальная недвижимость со всего Казахстана</p>
+          <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
+            <div className="text-center md:text-left">
+              <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Свежие объявления</h2>
+              <p className="text-slate-400 font-medium mt-1">Лучшие предложения, добавленные недавно</p>
             </div>
-            <Link href="/listings" className="btn-secondary hidden sm:flex py-2 px-4 text-sm">
-              Все объявления →
+            <Link href="/listings" className="btn-secondary py-2.5 px-6 text-sm font-bold flex items-center gap-2 group">
+              Смотреть все <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-2xl overflow-hidden animate-pulse">
+                <div key={i} className="card animate-pulse">
                   <div className="skeleton aspect-[4/3]" />
-                  <div className="p-4 space-y-2">
-                    <div className="skeleton h-5 w-3/4 rounded" />
-                    <div className="skeleton h-4 w-1/2 rounded" />
-                    <div className="skeleton h-3 w-2/3 rounded" />
+                  <div className="p-4 space-y-4">
+                    <div className="skeleton h-6 w-1/2" />
+                    <div className="skeleton h-4 w-3/4" />
+                    <div className="skeleton h-4 w-full" />
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {featured.map((listing) => (
                 <ListingCard key={listing.id} listing={listing} />
               ))}
             </div>
           )}
-
-          <div className="text-center mt-8">
-            <Link href="/listings" className="btn-primary inline-flex">
-              Показать все объявления
-            </Link>
-          </div>
         </div>
       </section>
 
       {/* Cities */}
-      <section className="py-12 bg-white">
+      <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-title mb-8">Недвижимость по городам</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4">Популярные города</h2>
+            <p className="text-slate-400 font-medium font-lg">Начните поиск недвижимости в крупнейших мегаполисах Казахстана</p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {cities.map((city) => (
               <Link
                 key={city.id}
                 href={`/listings?cityId=${city.id}`}
-                className="relative p-6 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 text-white overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                className="relative h-[280px] rounded-[32px] overflow-hidden group shadow-lg"
               >
-                <div className="absolute inset-0 bg-[#00A661] opacity-0 group-hover:opacity-20 transition-opacity" />
-                <h3 className="font-bold text-lg">{city.nameRu}</h3>
-                <p className="text-white/60 text-sm mt-1">{city.region}</p>
-                <div className="mt-4 flex items-center gap-1 text-[#00A661] text-sm font-medium">
-                  Смотреть →
+                {/* City Background Image */}
+                <div className="absolute inset-0 bg-slate-900">
+                  <img 
+                    src={CITY_IMAGES[city.slug] || '/cities/almaty.png'} 
+                    alt={city.nameRu}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70"
+                  />
+                </div>
+                
+                {/* Content Overlay */}
+                <div className="absolute inset-0 city-card-overlay flex flex-col justify-end p-8">
+                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                    <h3 className="font-black text-2xl text-white mb-1 tracking-tight">{city.nameRu}</h3>
+                    <p className="text-white/60 text-sm font-medium mb-4">{city.region}</p>
+                    <div className="h-0 group-hover:h-8 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 text-primary font-bold text-sm">
+                      Посмотреть объекты <ArrowRight size={16} />
+                    </div>
+                  </div>
                 </div>
               </Link>
             ))}
@@ -171,22 +233,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Free placement CTA */}
-      <section className="py-16 bg-[#00A661]">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <div className="text-5xl mb-4">🏠</div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
-            Разместите объявление бесплатно
+      {/* CTA Section */}
+      <section className="py-24 relative overflow-hidden bg-slate-900 mx-4 sm:mx-8 lg:mx-12 rounded-[48px] my-12">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
+        
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+          <div className="inline-flex p-4 bg-primary/10 rounded-3xl mb-8 border border-primary/20">
+            <PlusCircle size={48} className="text-primary animate-pulse" />
+          </div>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">
+            Хотите продать или <br /> сдать недвижимость?
           </h2>
-          <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
-            Продайте или сдайте недвижимость быстро. Миллионы покупателей и арендаторов ждут!
+          <p className="text-white/50 text-lg md:text-xl mb-12 max-w-xl mx-auto font-medium">
+            Разместите объявление прямо сейчас. Мы помогаем сотням людей находить жильё каждый день абсолютно бесплатно.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/listings/create" className="bg-white text-[#00A661] font-bold px-8 py-4 rounded-2xl hover:bg-gray-50 transition-all duration-200 text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1">
-              Разместить бесплатно
-            </Link>
-            <Link href="/auth/register" className="bg-white/20 border-2 border-white text-white font-bold px-8 py-4 rounded-2xl hover:bg-white/30 transition-all duration-200 text-lg">
-              Зарегистрироваться
+            <Link href="/listings/create" className="btn-primary py-4 px-10 text-lg shadow-2xl shadow-primary/30 active:scale-95">
+              Разместить объявление
             </Link>
           </div>
         </div>
