@@ -69,6 +69,8 @@ services:
     build:
       context: ./apps/frontend
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://72.60.182.72/api
     container_name: uytap_frontend
     restart: unless-stopped
     env_file: .env

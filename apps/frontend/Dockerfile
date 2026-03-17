@@ -16,8 +16,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Environment variables must be present at build time
-# (For a real production build, use GitHub Actions or similar to inject these)
-ENV NEXT_PUBLIC_API_URL=http://localhost:3001/api
+ARG NEXT_PUBLIC_API_URL=http://localhost:3001/api
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 RUN npm run build
 
