@@ -76,6 +76,7 @@ services:
     env_file: .env
     environment:
       NEXT_PUBLIC_API_URL: http://72.60.182.72/api
+      PORT: 3000
     depends_on:
       - backend
 
